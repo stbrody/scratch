@@ -19,34 +19,12 @@ def home():
 
 @app.route('/add', methods=['POST'])
 def add_post():
-    if not session.get('logged_in'):
-        abort(401)
     post = {'username':'admin',#request.form['username'],
             'title':request.form['title'],
             'body':request.form['body'],
             'timestamp':datetime.utcnow()}
     db.posts.insert(post)
     flash('New post was created successfully')
-    return redirect(url_for('home'))
-
-@app.route('/login/', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('home'))
-    return render_template('login.html', error=error)
-
-@app.route('/logout/')
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
